@@ -111,9 +111,7 @@ function buildVehicle() {
 
   carGeometry.computeFaceNormals();
 
-  var carMaterial = new THREE.MeshNormalMaterial({
-    color: 0x00ffff
-  });
+  var carMaterial = new THREE.MeshNormalMaterial();
 
   car = new THREE.Mesh(carGeometry, carMaterial);
 
