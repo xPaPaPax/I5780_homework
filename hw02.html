@@ -89,7 +89,6 @@ class Ball {
         this.pos.add(plane.normal.clone().multiplyScalar(this.radius));
         // 速度修正
         this.vel.sub(plane.normal.clone().multiplyScalar((1 + CR) * this.vel.dot(plane.normal)));
-        //return;  // assume particle collides with AT MOST one plane
       }
     }
   }
@@ -143,10 +142,13 @@ function MultiCollision(balls) {
   let ball_A, ball_B;
   let i, j;
   let myX, myZ, dt;
-  let v_prime, x_prime, v1_a, v2_a;  // 分子
-  let dt_prime, myPos, v1_b, v2_b;  //分母
+   //位置修正用
+  let subPos, overlap;
+  //速度修正用
+  let v_prime, x_prime, v1_a, v2_a;
+  let dt_prime, myPos, v1_b, v2_b;
   let matrix_v1, matrix_v2;
-  let subPos, overlap;  //位置修正用
+
   
   for(i = 0; i < balls.length - 1; i++) {
     for(j = i + 1; j < balls.length; j++) {
@@ -204,7 +206,8 @@ function init() {
   scene.add(light);
   
   var floor = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshPhongMaterial({
-    color: 0x555555
+    color: 0x555555,
+	side: THREE.DoubleSide
   }));
   floor.rotation.x = -Math.PI / 2;
   scene.add(floor);
@@ -218,63 +221,63 @@ function init() {
   document.body.appendChild(renderer.domElement);
   /*------------------------------------Ball------------------------------------*/
   let disk, ball;
-  disk = new THREE.Mesh(new THREE.CylinderGeometry(10, 10, 6, 32), new THREE.MeshBasicMaterial());
+  disk = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 4, 32), new THREE.MeshBasicMaterial());
 
-  ball = new Ball(disk, 10, new THREE.Color(0x00ffff), collisionSound_01, collisionSound_02);
+  ball = new Ball(disk, 8, new THREE.Color(0xabcdef), collisionSound_01, collisionSound_02);
   ball.vel.set(10, 0, 19);
   ball.pos.set(0, 3, -15);
   balls.push(ball);
 
-  disk = new THREE.Mesh(new THREE.CylinderGeometry(10, 10, 6, 32), new THREE.MeshBasicMaterial());
-  ball = new Ball(disk, 10, new THREE.Color(0xff00ff), collisionSound_01, collisionSound_02);
+  disk = new THREE.Mesh(new THREE.CylinderGeometry(10, 10, 4, 32), new THREE.MeshBasicMaterial());
+  ball = new Ball(disk, 10, new THREE.Color(0x987654), collisionSound_01, collisionSound_02);
   ball.vel.set(-11, 0, 18);
   ball.pos.set(-20, 3, -30);
   balls.push(ball);
   
-  disk = new THREE.Mesh(new THREE.CylinderGeometry(10, 10, 6, 32), new THREE.MeshBasicMaterial());
-  ball = new Ball(disk, 10, new THREE.Color(0xffff00), collisionSound_01, collisionSound_02);
+  disk = new THREE.Mesh(new THREE.CylinderGeometry(12, 12, 4, 32), new THREE.MeshBasicMaterial());
+  ball = new Ball(disk, 12, new THREE.Color(0xffff00), collisionSound_01, collisionSound_02);
   ball.vel.set(-12, 0, -17);
   ball.pos.set(-40, 3, 45);
   balls.push(ball);
   
-  disk = new THREE.Mesh(new THREE.CylinderGeometry(10, 10, 6, 32), new THREE.MeshBasicMaterial());
-  ball = new Ball(disk, 10, new THREE.Color(0xff0000), collisionSound_01, collisionSound_02);
+  disk = new THREE.Mesh(new THREE.CylinderGeometry(14, 14, 4, 32), new THREE.MeshBasicMaterial());
+  ball = new Ball(disk, 14, new THREE.Color(0xff0000), collisionSound_01, collisionSound_02);
   ball.vel.set(13, 0, -16);
   ball.pos.set(60, 3, 60);
   balls.push(ball);
   
-  disk = new THREE.Mesh(new THREE.CylinderGeometry(10, 10, 6, 32), new THREE.MeshBasicMaterial());
-  ball = new Ball(disk, 10, new THREE.Color(0x00ff00), collisionSound_01, collisionSound_02);
+  disk = new THREE.Mesh(new THREE.CylinderGeometry(16, 16, 4, 32), new THREE.MeshBasicMaterial());
+  ball = new Ball(disk, 16, new THREE.Color(0x048763), collisionSound_01, collisionSound_02);
   ball.vel.set(14, 0, 15);
   ball.pos.set(80, 3, -75);
   balls.push(ball);
   
-  disk = new THREE.Mesh(new THREE.CylinderGeometry(10, 10, 6, 32), new THREE.MeshBasicMaterial());
-  ball = new Ball(disk, 10, new THREE.Color(0x0000ff), collisionSound_01, collisionSound_02);
+  disk = new THREE.Mesh(new THREE.CylinderGeometry(18, 18, 4, 32), new THREE.MeshBasicMaterial());
+  ball = new Ball(disk, 18, new THREE.Color(0x0000ff), collisionSound_01, collisionSound_02);
   ball.vel.set(-15, 0, 14);
   ball.pos.set(-100, 3, -90);
   balls.push(ball);
   
-  disk = new THREE.Mesh(new THREE.CylinderGeometry(10, 10, 6, 32), new THREE.MeshBasicMaterial());
-  ball = new Ball(disk, 10, new THREE.Color(0xffffff), collisionSound_01, collisionSound_02);
+  disk = new THREE.Mesh(new THREE.CylinderGeometry(20, 20, 4, 32), new THREE.MeshBasicMaterial());
+  ball = new Ball(disk, 20, new THREE.Color(0xffffff), collisionSound_01, collisionSound_02);
   ball.vel.set(-16, 0, -13);
   ball.pos.set(-120, 3, 105);
   balls.push(ball);
   
-  disk = new THREE.Mesh(new THREE.CylinderGeometry(10, 10, 6, 32), new THREE.MeshBasicMaterial());
-  ball = new Ball(disk, 10, new THREE.Color(0xff8800), collisionSound_01, collisionSound_02);
+  disk = new THREE.Mesh(new THREE.CylinderGeometry(6, 6, 4, 32), new THREE.MeshBasicMaterial());
+  ball = new Ball(disk, 6, new THREE.Color(0xff8800), collisionSound_01, collisionSound_02);
   ball.vel.set(17, 0, -12);
   ball.pos.set(-40, 3, -20);
   balls.push(ball);
   
-  disk = new THREE.Mesh(new THREE.CylinderGeometry(10, 10, 6, 32), new THREE.MeshBasicMaterial());
-  ball = new Ball(disk, 10, new THREE.Color(0x8800ff), collisionSound_01, collisionSound_02);
+  disk = new THREE.Mesh(new THREE.CylinderGeometry(9, 9, 4, 32), new THREE.MeshBasicMaterial());
+  ball = new Ball(disk, 9, new THREE.Color(0x8800ff), collisionSound_01, collisionSound_02);
   ball.vel.set(18, 0, 11);
   ball.pos.set(60, 3, -135);
   balls.push(ball);
   
-  disk = new THREE.Mesh(new THREE.CylinderGeometry(10, 10, 6, 32), new THREE.MeshBasicMaterial());
-  ball = new Ball(disk, 10, new THREE.Color(0x1caf41), collisionSound_01, collisionSound_02);
+  disk = new THREE.Mesh(new THREE.CylinderGeometry(11, 11, 4, 32), new THREE.MeshBasicMaterial());
+  ball = new Ball(disk, 11, new THREE.Color(0x1caf41), collisionSound_01, collisionSound_02);
   ball.vel.set(-19, 0, 10);
   ball.pos.set(180, 3, 150);
   balls.push(ball);
