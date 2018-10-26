@@ -26,7 +26,7 @@
 <body>
   <div id="info">
     Sound, BGM, and Collision<br>
-	<button id="music" style="width:10%">Play Music</button><br>
+	<button id="music" style="width:10%">Play</button><br>
 	<a href="javascript:toggle();">dimmer</a>
   </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/84/three.min.js"></script>
@@ -59,9 +59,9 @@ class Ball {
     this.mesh = mesh;
     this.radius = rad;
 	this.audio_01 = audio_01.cloneNode();
-	this.audio_01.volume = 0.3;
+	this.audio_01.volume = 0.2;
 	this.audio_02 = audio_02.cloneNode();
-	this.audio_02.volume = 0.3;
+	this.audio_02.volume = 0.2;
     this.light = new THREE.PointLight(color, 1, 50);
     scene.add(this.light);
     scene.add(this.mesh);
@@ -127,7 +127,8 @@ $("#music").click(function() {
   if (musicState) { 
   	$('#music').text ('Play')
 	BGM.pause()
-  } else {
+  } 
+  else {
 	$('#music').text ('Pause')
 	BGM.play()
   }
@@ -145,8 +146,7 @@ function MultiCollision(balls) {
   let v_prime, x_prime, v1_a, v2_a;  // 分子
   let dt_prime, myPos, v1_b, v2_b;  //分母
   let matrix_v1, matrix_v2;
-  let ax, az, bx, bz;  //位置修正用
-  const CR = 0.0458;
+  let subPos, overlap;  //位置修正用
   
   for(i = 0; i < balls.length - 1; i++) {
     for(j = i + 1; j < balls.length; j++) {
@@ -159,12 +159,11 @@ function MultiCollision(balls) {
 	    //Sound
 		ball_A.audio_02.play();
 	    //位置修正
-	    ax = ball_A.pos.x - ball_A.vel.x * CR;
-	    az = ball_A.pos.z - ball_A.vel.z * CR;
-	    bx = ball_B.pos.x - ball_B.vel.x * CR;
-	    bz = ball_B.pos.z - ball_B.vel.z * CR;
-	    ball_A.pos.set(ax, 0, az);
-	    ball_B.pos.set(bx, 0, bz);
+		subPos = ball_B.pos.clone().sub(ball_A.pos);
+		overlap = (ball_B.radius + ball_A.radius) - subPos.length();
+		subPos.normalize();
+		ball_A.pos.add(subPos.clone().multiplyScalar(-overlap/2));
+		ball_B.pos.add(subPos.clone().multiplyScalar(overlap/2));
 	    //A速度修正
 	    v_prime = ball_A.vel.clone().sub(ball_B.vel);
 		x_prime = ball_A.pos.clone().sub(ball_B.pos);
@@ -198,9 +197,9 @@ function init() {
 
   camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
   camera.position.y = 200;
-  camera.position.z = 300;
+  camera.position.z = 150;
 
-  light = new THREE.PointLight(0xffffff);
+  light = new THREE.PointLight(0xcccccc);
   light.position.set(0, 300, 200);
   scene.add(light);
   
@@ -282,8 +281,8 @@ function init() {
   /*------------------------------------Wall------------------------------------*/
   let plane, wall;
   wall = new THREE.Mesh(new THREE.BoxGeometry(212, 40, 6), new THREE.MeshPhongMaterial({
-    color: 0xcc00cc,
-    opacity: 0.2,
+    color: 0x0000cc,
+    opacity: 0.15,
     transparent: true,
     side: THREE.DoubleSide
   }));
@@ -295,8 +294,8 @@ function init() {
   planes.push(plane);
 
   wall = new THREE.Mesh(new THREE.BoxGeometry(212, 40, 6), new THREE.MeshPhongMaterial({
-    color: 0xcc00cc,
-    opacity: 0.2,
+    color: 0x0000cc,
+    opacity: 0.15,
     transparent: true,
     side: THREE.DoubleSide
   }));
@@ -308,8 +307,8 @@ function init() {
   planes.push(plane);
   
   wall = new THREE.Mesh(new THREE.BoxGeometry(5, 40, 200), new THREE.MeshPhongMaterial({
-    color: 0xcc00cc,
-    opacity: 0.2,
+    color: 0x0000cc,
+    opacity: 0.15,
     transparent: true,
     side: THREE.DoubleSide
   }));
@@ -321,8 +320,8 @@ function init() {
   planes.push(plane);
   
   wall = new THREE.Mesh(new THREE.BoxGeometry(6, 40, 200), new THREE.MeshPhongMaterial({
-    color: 0xcc00cc,
-    opacity: 0.2,
+    color: 0x0000cc,
+    opacity: 0.15,
     transparent: true,
     side: THREE.DoubleSide
   }));
