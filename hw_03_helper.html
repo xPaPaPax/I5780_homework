@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<style>
+	#info {
+	  position: absolute;
+	  top: 0px;
+	  width: 100%;
+	  padding: 10px;
+	  text-align: center;
+	  color: #ffff00
+	}
+
+	body {
+	  overflow: hidden;
+	}
+</style>
+</head>
+
+<body>
+	<div id="info">HW3 helper</div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/84/three.min.js"></script>
+	<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.5/dat.gui.min.js"></script>
+<script>
+var camera, scene, renderer, mesh, light, controls;
+
+var head, body;
+var LH1, LH2, RH1, RH2;
+var LF1, LF2, RF1, RF2;
+
+init();
+animate();
+
+function loadJSON() {
+  
+}
+
+function init() {
+  scene = new THREE.Scene();
+
+  camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 1000);
+  camera.position.y = 150;
+  camera.position.z = 150;
+
+  light = new THREE.PointLight(0xffffff);
+  light.position.set(0, 300, 200);
+  scene.add(light);
+
+  var gridXZ = new THREE.GridHelper(200, 20, 'red', 'white');
+  scene.add(gridXZ);
+
+  renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x888888);
+
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+  document.body.appendChild(renderer.domElement);
+  ///////////////////////////////////////////////////////////
+  let Box, Mat, mesh;
+  //頭
+  Box = new THREE.BoxGeometry(10, 12, 10);
+  Mat = new THREE.MeshLambertMaterial({color: 0xffb5b5});
+  head = new THREE.Object3D();
+  mesh =  new THREE.Mesh(Box, Mat);
+  mesh.position.set(0, 0, 0);    //旋轉軸設定
+  head.add(mesh);
+  head.position.y = 26;
+  //身
+  Box = new THREE.BoxGeometry(20, 40, 16);
+  Mat = new THREE.MeshLambertMaterial({color: 0x886688});
+  body = new THREE.Object3D();
+  mesh =  new THREE.Mesh(Box, Mat);
+  body.add(mesh);
+  body.position.y = 20 + 40;
+  //右手
+  Box = new THREE.BoxGeometry(8, 22, 8);
+  Mat = new THREE.MeshLambertMaterial({color: 0x00ffff});
+  RH1 = new THREE.Object3D();
+  mesh =  new THREE.Mesh(Box, Mat);
+  mesh.position.set(0, -11, 0);    //旋轉軸設定
+  RH1.add(mesh);
+  RH1.position.x = -14;
+  RH1.position.y = 20;
+  
+  Box = new THREE.BoxGeometry(8, 18, 8);
+  Mat = new THREE.MeshLambertMaterial({color: 0xffb5b5});
+  RH2 = new THREE.Object3D();
+  mesh =  new THREE.Mesh(Box, Mat);
+  mesh.position.set(0, -9, 0);    //旋轉軸設定
+  RH2.add(mesh);
+  RH2.position.y = -22;
+  //左手
+  Box = new THREE.BoxGeometry(8, 22, 8);
+  Mat = new THREE.MeshLambertMaterial({color: 0x00ffff});
+  LH1 = new THREE.Object3D();
+  mesh =  new THREE.Mesh(Box, Mat);
+  mesh.position.set(0, -11, 0);    //旋轉軸設定
+  LH1.add(mesh);
+  LH1.position.x = 14;
+  LH1.position.y = 20;
+  
+  Box = new THREE.BoxGeometry(8, 18, 8);
+  Mat = new THREE.MeshLambertMaterial({color: 0xffb5b5});
+  LH2 = new THREE.Object3D();
+  mesh =  new THREE.Mesh(Box, Mat);
+  mesh.position.set(0, -9, 0);    //旋轉軸設定
+  LH2.add(mesh);
+  LH2.position.y = -22;
+  //右腳
+  Box = new THREE.BoxGeometry(8, 22, 8);
+  Mat = new THREE.MeshLambertMaterial({color: 0x00ffff});
+  RF1 = new THREE.Object3D();
+  mesh =  new THREE.Mesh(Box, Mat);
+  mesh.position.set(0, -11, 0);    //旋轉軸設定
+  RF1.add(mesh);
+  RF1.position.x = -5;
+  RF1.position.y = -20;
+  
+  Box = new THREE.BoxGeometry(8, 18, 8);
+  Mat = new THREE.MeshLambertMaterial({color: 0xffb5b5});
+  RF2 = new THREE.Object3D();
+  mesh =  new THREE.Mesh(Box, Mat);
+  mesh.position.set(0, -9, 0);    //旋轉軸設定
+  RF2.add(mesh);
+  RF2.position.y = -22;
+  //左腳
+  Box = new THREE.BoxGeometry(8, 22, 8);
+  Mat = new THREE.MeshLambertMaterial({color: 0x00ffff});
+  LF1 = new THREE.Object3D();
+  mesh =  new THREE.Mesh(Box, Mat);
+  mesh.position.set(0, -11, 0);    //旋轉軸設定
+  LF1.add(mesh);
+  LF1.position.x = 5;
+  LF1.position.y = -20;
+  
+  Box = new THREE.BoxGeometry(8, 18, 8);
+  Mat = new THREE.MeshLambertMaterial({color: 0xffb5b5});
+  LF2 = new THREE.Object3D();
+  mesh =  new THREE.Mesh(Box, Mat);
+  mesh.position.set(0, -9, 0);    //旋轉軸設定
+  LF2.add(mesh);
+  LF2.position.y = -22;
+  
+  body.add(head);
+  body.add(RH1);
+  body.add(LH1);
+  body.add(RF1);
+  body.add(LF1);
+  RH1.add(RH2);
+  LH1.add(LH2);
+  RF1.add(RF2);
+  LF1.add(LF2);
+  
+  scene.add(body);
+  ///////////////////////////////////////////////////////////
+  gcontrol = {
+	//頭
+	head_x: 0.01,
+    head_y: 0.01,
+	head_z: 0.01,
+	//身
+	body_x: 0.01,
+    body_y: 0.01,
+	body_z: 0.01,
+	body_h: 60.01,
+	//右手
+    RH1_x: 0.01,
+    RH1_y: 0.01,
+	RH1_z: 0.01,
+	RH2_x: 0.01,
+    RH2_y: 0.01,
+	RH2_z: 0.01,
+	//左手
+	LH1_x: 0.01,
+    LH1_y: 0.01,
+	LH1_z: 0.01,
+	LH2_x: 0.01,
+    LH2_y: 0.01,
+	LH2_z: 0.01,
+	//右腳
+	RF1_x: 0.01,
+    RF1_y: 0.01,
+	RF1_z: 0.01,
+	RF2_x: 0.01,
+    RF2_y: 0.01,
+	RF2_z: 0.01,
+	//左腳
+	LF1_x: 0.01,
+    LF1_y: 0.01,
+	LF1_z: 0.01,
+	LF2_x: 0.01,
+    LF2_y: 0.01,
+	LF2_z: 0.01
+  };
+  var gui = new dat.GUI();
+  gui.domElement.id = 'gui';
+  gui.remember(gcontrol);
+  //頭
+  gui.add(gcontrol, 'head_x', -1.01, 1.01);
+  gui.add(gcontrol, 'head_y', -1.7, 1.7);
+  gui.add(gcontrol, 'head_z', -1.01, 1.01);
+  //身
+  gui.add(gcontrol, 'body_x', -1.01, 1.01);
+  gui.add(gcontrol, 'body_y', -1.7, 1.7);
+  gui.add(gcontrol, 'body_z', -1.01, 1.01);
+  gui.add(gcontrol, 'body_h', 40.01, 80.01);
+  //右手
+  gui.add(gcontrol, 'RH1_x', -3.2, 3.2);
+  gui.add(gcontrol, 'RH1_y', -3.2, 3.2);
+  gui.add(gcontrol, 'RH1_z', -3.2, 3.2);
+  gui.add(gcontrol, 'RH2_x', -2.8, 0.01);
+  gui.add(gcontrol, 'RH2_y', -3.2, 3.2);
+  gui.add(gcontrol, 'RH2_z', -1.51, 1.51);
+  //左手
+  gui.add(gcontrol, 'LH1_x', -3.2, 3.2);
+  gui.add(gcontrol, 'LH1_y', -3.2, 3.2);
+  gui.add(gcontrol, 'LH1_z', -3.2, 3.2);
+  gui.add(gcontrol, 'LH2_x', -2.8, 0.01);
+  gui.add(gcontrol, 'LH2_y', -3.2, 3.2);
+  gui.add(gcontrol, 'LH2_z', -1.51, 1.51);
+  //右腳
+  gui.add(gcontrol, 'RF1_x', -3.2, 3.2);
+  gui.add(gcontrol, 'RF1_y', -3.2, 3.2);
+  gui.add(gcontrol, 'RF1_z', -3.2, 3.2);
+  gui.add(gcontrol, 'RF2_x', 0.01, 2.8);
+  gui.add(gcontrol, 'RF2_y', -3.2, 3.2);
+  gui.add(gcontrol, 'RF2_z', -1.51, 1.51);
+  //左腳
+  gui.add(gcontrol, 'LF1_x', -3.2, 3.2);
+  gui.add(gcontrol, 'LF1_y', -3.2, 3.2);
+  gui.add(gcontrol, 'LF1_z', -3.2, 3.2);
+  gui.add(gcontrol, 'LF2_x', 0.01, 2.8);
+  gui.add(gcontrol, 'LF2_y', -3.2, 3.2);
+  gui.add(gcontrol, 'LF2_z', -1.51, 1.51);
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  render();
+}
+
+function render() {
+  //頭
+  head.rotation.x = gcontrol.head_x;
+  head.rotation.y = gcontrol.head_y;
+  head.rotation.z = gcontrol.head_z;
+  //身
+  body.rotation.x = gcontrol.body_x;
+  body.rotation.y = gcontrol.body_y;
+  body.rotation.z = gcontrol.body_z;
+  body.position.y = gcontrol.body_h;
+  //右手
+  RH1.rotation.x = gcontrol.RH1_x;
+  RH1.rotation.y = gcontrol.RH1_y;
+  RH1.rotation.z = gcontrol.RH1_z;
+  RH2.rotation.x = gcontrol.RH2_x;
+  RH2.rotation.y = gcontrol.RH2_y;
+  RH2.rotation.z = gcontrol.RH2_z;
+  //左手
+  LH1.rotation.x = gcontrol.LH1_x;
+  LH1.rotation.y = gcontrol.LH1_y;
+  LH1.rotation.z = gcontrol.LH1_z;
+  LH2.rotation.x = gcontrol.LH2_x;
+  LH2.rotation.y = gcontrol.LH2_y;
+  LH2.rotation.z = gcontrol.LH2_z;
+  //右腳
+  RF1.rotation.x = gcontrol.RF1_x;
+  RF1.rotation.y = gcontrol.RF1_y;
+  RF1.rotation.z = gcontrol.RF1_z;
+  RF2.rotation.x = gcontrol.RF2_x;
+  RF2.rotation.y = gcontrol.RF2_y;
+  RF2.rotation.z = gcontrol.RF2_z;
+  //左腳
+  LF1.rotation.x = gcontrol.LF1_x;
+  LF1.rotation.y = gcontrol.LF1_y;
+  LF1.rotation.z = gcontrol.LF1_z;
+  LF2.rotation.x = gcontrol.LF2_x;
+  LF2.rotation.y = gcontrol.LF2_y;
+  LF2.rotation.z = gcontrol.LF2_z;
+  
+  renderer.render(scene, camera);
+}
+</script>
+</body>
+
+</html>
